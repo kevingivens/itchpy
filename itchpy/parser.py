@@ -1,6 +1,5 @@
 from sly import Parser
 
-
 from lexer import ITCHLexer
 import itch_ast as i_ast
 
@@ -11,8 +10,16 @@ class ITCHParser(Parser):
     
     # debugfile = 'parser.out'
 
+    @_("translation_unit")
+    def translation_unit_or_empty(self, p):
+       return i_ast.FileAST(p.translation_unit)
+    
+    @_("empty")
+    def translation_unit_or_empty(self, p):
+        return i_ast.FileAST([])
+
     @_('declaration_specifiers init_declarator_list_opt')
-    def p_decl_body(self, p):
+    def decl_body(self, p):
         spec = p[1]
 
         # p[2] (init_declarator_list_opt) is either a list or None
@@ -61,11 +68,19 @@ class ITCHParser(Parser):
     # Since each declaration is a list of declarations, this
     # rule will combine all the declarations and return a single
     # list
-    #
-    @_('declaration_list declaration',
-       'declaration_list declaration_list declaration')
-    def declaration_list(self, p):
-        p[0] = p[1] if len(p) == 2 else p[1] + p[2]
+
+    #@_('declaration_list declaration',
+    #   'declaration_list declaration_list declaration')
+    #def declaration_list(self, p):
+    #    p[0] = p[1] if len(p) == 2 else p[1] + p[2]
+
+    #@_('declaration_list declaration')
+    #def declaration_list(self, p):
+    #    p.declaration_list = p.declaration
+
+    #@_('declaration_list declaration_list declaration')
+    #def declaration_list(self, p):
+    #    p[1] + p[2]
 
     # Grammar rules and actions
     @_('ENUM ID COLON typeid LBRACE enumerator_list RBRACE')

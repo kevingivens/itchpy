@@ -11,6 +11,7 @@ def _repr(obj):
     else:
         return repr(obj)
 
+
 class NodeVisitor(object):
     """ A base NodeVisitor class for visiting c_ast nodes.
         Subclass it and define your own visit_XXX methods, where
@@ -160,6 +161,48 @@ class Assignment(Node):
     attr_names = ('op', )
 
 
+class Decl(Node):
+    __slots__ = ('name', 'type', 'init', 'coord', '__weakref__')
+    def __init__(self, name, type, init, coord=None):
+        self.name = name
+        self.type = type
+        self.init = init
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.type is not None: nodelist.append(("type", self.type))
+        if self.init is not None: nodelist.append(("init", self.init))
+        return tuple(nodelist)
+
+    def __iter__(self):
+        if self.type is not None:
+            yield self.type
+        if self.init is not None:
+            yield self.init
+
+    attr_names = ('name', )
+
+
+class DeclList(Node):
+    __slots__ = ('decls', 'coord', '__weakref__')
+    def __init__(self, decls, coord=None):
+        self.decls = decls
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        for i, child in enumerate(self.decls or []):
+            nodelist.append(("decls[%d]" % i, child))
+        return tuple(nodelist)
+
+    def __iter__(self):
+        for child in (self.decls or []):
+            yield child
+
+    attr_names = ()
+
+
 class Enum(Node):
     __slots__ = ('name', 'values', 'typeid', 'coord', '__weakref__')
     def __init__(self, name, typeid, values, coord=None):
@@ -213,6 +256,25 @@ class EnumeratorList(Node):
 
     def __iter__(self):
         for child in (self.enumerators or []):
+            yield child
+
+    attr_names = ()
+
+
+class FileAST(Node):
+    __slots__ = ('ext', 'coord', '__weakref__')
+    def __init__(self, ext, coord=None):
+        self.ext = ext
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        for i, child in enumerate(self.ext or []):
+            nodelist.append(("ext[%d]" % i, child))
+        return tuple(nodelist)
+
+    def __iter__(self):
+        for child in (self.ext or []):
             yield child
 
     attr_names = ()
