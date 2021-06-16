@@ -35,6 +35,9 @@ class ITCHLexer(Lexer):
     # String containing ignored characters between tokens
     ignore = ' \t'
 
+    # Other ignored patterns
+    ignore_comment = r'\#.*'
+
     # Identifiers and keywords
     ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
     
@@ -71,7 +74,14 @@ class ITCHLexer(Lexer):
         self.index += 1
 
 if __name__ == '__main__':
-    data = 'enum Ticket: char {Red, Blue}'
+    data = """
+    # ticket example
+    enum Suit: char {Spades, Clubs, Diamands, Hearts }
+
+    enum Color: char {Red, Blue}
+
+
+    """
     lexer = ITCHLexer()
 
     for tok in lexer.tokenize(data):
