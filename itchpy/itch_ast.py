@@ -280,6 +280,59 @@ class FileAST(Node):
     attr_names = ()
 
 
+class ID(Node):
+    __slots__ = ('name', 'coord', '__weakref__')
+    def __init__(self, name, coord=None):
+        self.name = name
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        return tuple(nodelist)
+
+    def __iter__(self):
+        return
+        yield
+
+    attr_names = ('name', )
+
+
+class IdentifierType(Node):
+    __slots__ = ('names', 'coord', '__weakref__')
+    def __init__(self, names, coord=None):
+        self.names = names
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        return tuple(nodelist)
+
+    def __iter__(self):
+        return
+        yield
+
+    attr_names = ('names', )
+
+
+class Typename(Node):
+    __slots__ = ('name', 'type', 'coord', '__weakref__')
+    def __init__(self, name, type, coord=None):
+        self.name = name
+        self.type = type
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.type is not None: nodelist.append(("type", self.type))
+        return tuple(nodelist)
+
+    def __iter__(self):
+        if self.type is not None:
+            yield self.type
+
+    attr_names = ('name', 'quals', )
+
+
 class Struct(Node):
     __slots__ = ('name', 'decls', 'coord', '__weakref__')
     def __init__(self, name, decls, coord=None):

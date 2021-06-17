@@ -10,7 +10,7 @@ class ITCHLexer(Lexer):
         LBRACE,         # {
         RBRACE,         # }
         COMMA,          # ,              
-        # SEMI,         # ;
+        SEMI,           # ;
         COLON,          # :
 
         # Assignment
@@ -26,7 +26,8 @@ class ITCHLexer(Lexer):
         SHORT,          # 2 bytes, signed
         ULONG,          # 4 bytes, unsigned
         LONG,           # 4 bytes, signed
-        DOUBLE          # 8 bytes, floating point 
+        DOUBLE,         # 8 bytes, floating point
+        TIME            # 8 bytes, converted from 6 bytes on the wire  
         
         #NUMBER,
 
@@ -51,7 +52,8 @@ class ITCHLexer(Lexer):
     ID['short'] = SHORT         
     ID['ulong'] = ULONG         
     ID['long'] = LONG
-    ID['double'] = DOUBLE 
+    ID['double'] = DOUBLE
+    ID['time'] = TIME 
 
     # ASSIGN = r'='
 
@@ -59,7 +61,7 @@ class ITCHLexer(Lexer):
     LBRACE  = r'\{'
     RBRACE  = r'\}'
     COMMA   = r','
-    # SEMI    = r';'
+    SEMI    = r';'
     COLON   = r':'
     # NUMBER  = r'\d+'
     # INT = r'^[0-9]+$'
@@ -75,11 +77,17 @@ class ITCHLexer(Lexer):
 
 if __name__ == '__main__':
     data = """
-    # ticket example
-    enum Suit: char {Spades, Clubs, Diamands, Hearts }
+    # add order example
+    enum OrderType: char {B, S}
 
-    enum Color: char {Red, Blue}
 
+    struct AddOrder {
+        message_type:char;
+        stock_locate:short;
+        tracking_number:short;
+        timestamp:time;
+        bs_indicator:OrderType;
+    }
 
     """
     lexer = ITCHLexer()

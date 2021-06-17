@@ -1,10 +1,10 @@
 ITCHPY
 ======
 
-Itch parser generator
+Itch Parser Generator
 
-Using sly, ITCHPY generates an ITCH parser in C++
+Using [sly](https://github.com/dabeaz/sly), ITCHPY generates an ITCH parser in C++.
 
-Trade messages are specified in a schema file
+Trade messages are specified in a schema file.
 
 
