@@ -6,20 +6,24 @@ import itch_ast as i_ast
 # adapted from pycparser
 
 class ITCHParser(Parser):
+    # builds an AST
+        
     # Get the token list from the lexer (required)
     tokens = ITCHLexer.tokens
     
-    # debugfile = 'parser.out'
+    debugfile = 'parser.out'
 
     # Grammar rules and actions
     #@_("translation_unit")
     #def translation_unit_or_empty(self, p):
+    #   # print("in tue 1")
     #   return i_ast.FileAST(p.translation_unit)
     #
     #@_("empty")
     #def translation_unit_or_empty(self, p):
+    #    # print("in tue 2")
     #    return i_ast.FileAST([])
-    #
+    
     @_('declaration')
     def translation_unit(self, p):
         return i_ast.FileAST([p.declaration])
@@ -31,24 +35,23 @@ class ITCHParser(Parser):
     @_("struct_decl",
        "enum_decl")
     def declaration(self, p):
+        
         return p[0]
     
     @_('STRUCT ID LBRACE field_declarator_list RBRACE')
     def struct_decl(self, p):
-        return i_ast.Struct(
-                name=p.ID,
-                decls=p.field_declaration_list)
+        return i_ast.Struct(name=p.ID, fields=p.field_declarator_list)
     
     @_('field_declarator')
     def field_declarator_list(self, p):
         return [p[0]]
 
-    @_('field_declarator_list COMMA field_declarator')
+    @_('field_declarator_list field_declarator')
     def field_declarator_list(self, p):
-        return p[0] + [p[2]]
+        return p[0] + [p[1]]
     
     # TODO: consider type_specifier instead of second ID
-    @_('ID COLON ID SEMI')
+    @_('ID COLON typeid SEMI')
     def field_declarator(self, p):
         return i_ast.FieldDecl(p[0], p[2])
 
@@ -97,28 +100,30 @@ class ITCHParser(Parser):
     def typeid(self, p):
         return i_ast.IdentifierType([p[0]])
 
+    #@_('')
+    #def empty(self, p):
+    #    pass
+
     
 if __name__ == '__main__':
-    data_old = """
+    data = """
+    enum Color: char {
+        Red, 
+        Blue
+    }
+    
     enum Ticket: char {
         Stop, 
         Speed
     }
-    enum AnotherTicket: char {
-        Soo, 
-        Spe
-    }
-    """
-    data = """
+
     struct AddOrder {
         message_type:char;
         stock_locate:short;
         tracking_number:short;
         timestamp:time;
-        bs_indicator:OrderType;
     }
     """
-    # enum Color: char {Red, Blue}
     
     lexer = ITCHLexer()
     

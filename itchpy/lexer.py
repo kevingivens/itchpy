@@ -78,17 +78,22 @@ class ITCHLexer(Lexer):
 if __name__ == '__main__':
     data = """
     # add order example
-    enum OrderType: char {B, S}
-
+    enum Color: char {
+        Red, 
+        Blue
+    }
+    
+    enum Ticket: char {
+        Stop, 
+        Speed
+    }
 
     struct AddOrder {
         message_type:char;
         stock_locate:short;
         tracking_number:short;
         timestamp:time;
-        bs_indicator:OrderType;
     }
-
     """
     lexer = ITCHLexer()
 
