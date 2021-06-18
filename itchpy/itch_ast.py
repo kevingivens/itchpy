@@ -92,50 +92,50 @@ class Node(object):
         """
         pass
 
-    #def show(self, buf=sys.stdout, offset=0, attrnames=False, nodenames=False, showcoord=False, _my_node_name=None):
-    #    """ Pretty print the Node and all its attributes and
-    #        children (recursively) to a buffer.
-    #        buf:
-    #            Open IO buffer into which the Node is printed.
-    #        offset:
-    #            Initial offset (amount of leading spaces)
-    #        attrnames:
-    #            True if you want to see the attribute names in
-    #            name=value pairs. False to only see the values.
-    #        nodenames:
-    #            True if you want to see the actual node names
-    #            within their parents.
-    #        showcoord:
-    #            Do you want the coordinates of each Node to be
-    #            displayed.
-    #    """
-    #    lead = ' ' * offset
-    #    if nodenames and _my_node_name is not None:
-    #        buf.write(lead + self.__class__.__name__+ ' <' + _my_node_name + '>: ')
-    #    else:
-    #        buf.write(lead + self.__class__.__name__+ ': ')
-    #
-    #    if self.attr_names:
-    #        if attrnames:
-    #            nvlist = [(n, getattr(self,n)) for n in self.attr_names]
-    #            attrstr = ', '.join('%s=%s' % nv for nv in nvlist)
-    #        else:
-    #            vlist = [getattr(self, n) for n in self.attr_names]
-    #            attrstr = ', '.join('%s' % v for v in vlist)
-    #        buf.write(attrstr)
-    #
-    #    if showcoord:
-    #        buf.write(' (at %s)' % self.coord)
-    #    buf.write('\n')
-    #
-    #    for (child_name, child) in self.children():
-    #        child.show(
-    #            buf,
-    #            offset=offset + 2,
-    #            attrnames=attrnames,
-    #            nodenames=nodenames,
-    #            showcoord=showcoord,
-    #            _my_node_name=child_name)
+    def show(self, buf=sys.stdout, offset=0, attrnames=False, nodenames=False, showcoord=False, _my_node_name=None):
+        """ Pretty print the Node and all its attributes and
+            children (recursively) to a buffer.
+            buf:
+                Open IO buffer into which the Node is printed.
+            offset:
+                Initial offset (amount of leading spaces)
+            attrnames:
+                True if you want to see the attribute names in
+                name=value pairs. False to only see the values.
+            nodenames:
+                True if you want to see the actual node names
+                within their parents.
+            showcoord:
+                Do you want the coordinates of each Node to be
+                displayed.
+        """
+        lead = ' ' * offset
+        if nodenames and _my_node_name is not None:
+            buf.write(lead + self.__class__.__name__+ ' <' + _my_node_name + '>: ')
+        else:
+            buf.write(lead + self.__class__.__name__+ ': ')
+    
+        if self.attr_names:
+            if attrnames:
+                nvlist = [(n, getattr(self,n)) for n in self.attr_names]
+                attrstr = ', '.join('%s=%s' % nv for nv in nvlist)
+            else:
+                vlist = [getattr(self, n) for n in self.attr_names]
+                attrstr = ', '.join('%s' % v for v in vlist)
+            buf.write(attrstr)
+    
+        if showcoord:
+            buf.write(' (at %s)' % self.coord)
+        buf.write('\n')
+    
+        for (child_name, child) in self.children():
+            child.show(
+                buf,
+                offset=offset + 2,
+                attrnames=attrnames,
+                nodenames=nodenames,
+                showcoord=showcoord,
+                _my_node_name=child_name)
 
 
 class Assignment(Node):
@@ -261,6 +261,25 @@ class EnumeratorList(Node):
     attr_names = ()
 
 
+class FieldDecl(Node):
+    __slots__ = ('name', 'type', 'coord', '__weakref__')
+    def __init__(self, name, type, coord=None):
+        self.name = name
+        self.type = type
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.type is not None: nodelist.append(("type", self.type))
+        return tuple(nodelist)
+
+    def __iter__(self):
+        if self.type is not None:
+            yield self.type
+
+    attr_names = ('name', )
+
+
 class FileAST(Node):
     __slots__ = ('ext', 'coord', '__weakref__')
     def __init__(self, ext, coord=None):
@@ -334,20 +353,20 @@ class Typename(Node):
 
 
 class Struct(Node):
-    __slots__ = ('name', 'decls', 'coord', '__weakref__')
-    def __init__(self, name, decls, coord=None):
+    __slots__ = ('name', 'fields', 'coord', '__weakref__')
+    def __init__(self, name, fields, coord=None):
         self.name = name
-        self.decls = decls
+        self.fields = fields
         self.coord = coord
 
     def children(self):
         nodelist = []
-        for i, child in enumerate(self.decls or []):
-            nodelist.append(("decls[%d]" % i, child))
+        for i, child in enumerate(self.fields or []):
+            nodelist.append(("fields[%d]" % i, child))
         return tuple(nodelist)
 
     def __iter__(self):
-        for child in (self.decls or []):
+        for child in (self.fields or []):
             yield child
 
     attr_names = ('name', )
