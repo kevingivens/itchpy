@@ -14,24 +14,24 @@ class ITCHParser(Parser):
     # debugfile = 'parser.out'
 
     # Grammar rules and actions
+    @_("translation_unit")
+    def translation_unit_or_empty(self, p):
+       return i_ast.FileAST(p.translation_unit)
     
-    #@_("translation_unit")
-    #def translation_unit_or_empty(self, p):
-    #   # print("in tue 1")
-    #   return i_ast.FileAST(p.translation_unit)
-    #
-    #@_("empty")
-    #def translation_unit_or_empty(self, p):
-    #    # print("in tue 2")
-    #    return i_ast.FileAST([])
+    @_("empty")
+    def translation_unit_or_empty(self, p):
+        return i_ast.FileAST([])
     
     @_('declaration')
     def translation_unit(self, p):
-        return i_ast.FileAST([p.declaration])
-
+        #return i_ast.FileAST([p.declaration])
+        return [p.declaration]
+        #return p[0].decls = [p.declaration]
+    
     @_('translation_unit declaration')
     def translation_unit(self, p):
-        return p[0].decls.extend(p[1])
+        p[0].extend(p[1])
+        return p[0]
 
     @_("struct_decl",
        "enum_decl")
@@ -76,20 +76,6 @@ class ITCHParser(Parser):
     def enum_value(self, p):
         return i_ast.Enumerator(p.ID, None)
 
-    #@_('ENUM')
-    #def enum_specifier(self, p):
-    #    return p[0]
-    
-    #@_('STRUCT')
-    #def struct_specifier(self, p):
-    #    return p[0]
-
-    #@_('enum_specifier',
-    #   'struct_specifier',
-    #   'typeid')
-    #def type_specifier(self, p):
-    #    return p[0]
-
     @_('CHAR',
        'USHORT',
        'SHORT',
@@ -100,17 +86,12 @@ class ITCHParser(Parser):
     def typeid(self, p):
         return i_ast.IdentifierType([p[0]])
 
-    #@_('')
-    #def empty(self, p):
-    #    pass
+    @_('')
+    def empty(self, p):
+        pass
 
     
 if __name__ == '__main__':
-    data = """
-    enum Ticket: char {
-        Stop, 
-        Speed
-    }"""
     data = """
     struct AddOrder {
         message_type:char;
@@ -123,6 +104,10 @@ if __name__ == '__main__':
         stock_locate:short;
         tracking_number:short;
         timestamp:time;
+    }
+    enum Ticket: char {
+        Stop, 
+        Speed
     }
     """
     
