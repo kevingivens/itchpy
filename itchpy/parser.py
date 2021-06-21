@@ -30,7 +30,7 @@ class ITCHParser(Parser):
     
     @_('translation_unit declaration')
     def translation_unit(self, p):
-        p[0].extend(p[1])
+        p[0] += [p[1]]
         return p[0]
 
     @_("struct_decl",
@@ -84,7 +84,7 @@ class ITCHParser(Parser):
        'DOUBLE',
        'TIME')
     def typeid(self, p):
-        return i_ast.IdentifierType([p[0]])
+        return i_ast.ID(p[0])
 
     @_('')
     def empty(self, p):
