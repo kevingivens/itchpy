@@ -11,9 +11,10 @@ class ITCHParser(Parser):
     # Get the token list from the lexer (required)
     tokens = ITCHLexer.tokens
     
-    debugfile = 'parser.out'
+    # debugfile = 'parser.out'
 
     # Grammar rules and actions
+    
     #@_("translation_unit")
     #def translation_unit_or_empty(self, p):
     #   # print("in tue 1")
@@ -30,12 +31,11 @@ class ITCHParser(Parser):
 
     @_('translation_unit declaration')
     def translation_unit(self, p):
-        return p[0].ext.extend(p[1])
+        return p[0].decls.extend(p[1])
 
     @_("struct_decl",
        "enum_decl")
     def declaration(self, p):
-        
         return p[0]
     
     @_('STRUCT ID LBRACE field_declarator_list RBRACE')
@@ -107,17 +107,18 @@ class ITCHParser(Parser):
     
 if __name__ == '__main__':
     data = """
-    enum Color: char {
-        Red, 
-        Blue
-    }
-    
     enum Ticket: char {
         Stop, 
         Speed
-    }
-
+    }"""
+    data = """
     struct AddOrder {
+        message_type:char;
+        stock_locate:short;
+        tracking_number:short;
+        timestamp:time;
+    }
+    struct LimitOrder {
         message_type:char;
         stock_locate:short;
         tracking_number:short;
