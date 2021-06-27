@@ -1,5 +1,3 @@
-
-
 import itch_ast as i_ast
 
 
@@ -59,11 +57,9 @@ class CPPGenerator(object):
             s += self.visit(decl) + '\n'
         return s
     
-    
     def visit_FieldDecl(self, n):
-        s = f'{n.name}:{self.visit(n.type)}'
+        s = f'{self.visit(n.type)} {n.name}'
         return s
-    
     
     def visit_Struct(self, n):
         s = 'struct ' + (n.name or '')
@@ -79,33 +75,8 @@ class CPPGenerator(object):
             s += self._make_indent() + '}'
         return s
     
-
-    #def _generate_struct_enum(self, n, name):
-    #    """ Generates code for structs and enums. name should be
-    #        'struct' or 'enum'.
-    #    """
-    #    if name == ('struct'):
-    #        members = n.fields
-    #        body_function = self._generate_struct_body
-    #    else:
-    #        assert name == 'enum'
-    #        members = None if n.values is None else n.values.enumerators
-    #        body_function = self._generate_enum_body
-    #    s = name + ' ' + (n.name or '')
-    #    if members is not None:
-    #        # None means no members
-    #        # Empty sequence means an empty list of members
-    #        s += '\n'
-    #        s += self._make_indent()
-    #        self.indent_level += 2
-    #        s += '{\n'
-    #        s += body_function(members)
-    #        self.indent_level -= 2
-    #        s += self._make_indent() + '}'
-    #    return s
-
     def _generate_struct_body(self, members):
-        return ''.join(self._generate_stmt(decl) for decl in members)
+        return ''.join(self._generate_stmt(member) for member in members)
 
     def _generate_enum_body(self, members):
         # `[:-2] + '\n'` removes the final `,` from the enumerator list
