@@ -73,11 +73,19 @@ class ITCHLexer(Lexer):
 
     def error(self, t):
         print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
+        self.errors.append(t.value)
         self.index += 1
+        if hasattr(self, 'return_error'):
+            return t
+
+    def __init__(self):
+        self.errors = []
+
 
 if __name__ == '__main__':
     data = """
     # add order example
+    add ** ;
     enum Color: char {
         Red, 
         Blue
