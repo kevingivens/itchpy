@@ -1,4 +1,4 @@
-import itch_ast as i_ast
+from . import itch_ast as i_ast
 
 
 class CPPGenerator(object):
