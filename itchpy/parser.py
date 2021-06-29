@@ -13,6 +13,9 @@ class ITCHParser(Parser):
     
     # debugfile = 'parser.out'
 
+    def __init__(self):
+        self.errors = []
+
     # Grammar rules and actions
     @_("translation_unit")
     def translation_unit_or_empty(self, p):
@@ -89,6 +92,9 @@ class ITCHParser(Parser):
     @_('')
     def empty(self, p):
         pass
+
+    def error(self, tok):
+        self.errors.append(tok)
 
     
 if __name__ == '__main__':
