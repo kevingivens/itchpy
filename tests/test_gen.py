@@ -3,7 +3,6 @@ import pytest
 from itchpy.cpp_gen import CPPGenerator
 
 
-
 def test_cpp_gen_enum(lexer, parser, generator):
     input = """
     enum a: char {
@@ -11,7 +10,7 @@ def test_cpp_gen_enum(lexer, parser, generator):
         c
     }
     """
-    output ="""enum a
+    output = """enum a
 {
   b,
   c
@@ -19,10 +18,11 @@ def test_cpp_gen_enum(lexer, parser, generator):
 """
 
     ast = parser.parse(lexer.tokenize(input))
-     
+
     result = generator.visit(ast)
 
     assert result == output
+
 
 def test_cpp_gen_struct(lexer, parser, generator):
     input = """
@@ -31,7 +31,7 @@ def test_cpp_gen_struct(lexer, parser, generator):
         c:short;
     }
     """
-    output ="""struct a
+    output = """struct a
 {
   char b;
   short c;
@@ -39,7 +39,7 @@ def test_cpp_gen_struct(lexer, parser, generator):
 """
 
     ast = parser.parse(lexer.tokenize(input))
-     
+
     result = generator.visit(ast)
 
-    assert result == output 
+    assert result == output
