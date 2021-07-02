@@ -2,6 +2,9 @@ init:
 	pip install -e .
 	pip install -r requirements-dev.txt
 
+lint:
+	flake8 --ignore=E501,F821 itchpy
+
 black:
 	black .
 
