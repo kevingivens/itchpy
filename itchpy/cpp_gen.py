@@ -1,4 +1,3 @@
-from . import itch_ast as i_ast
 
 
 class CPPGenerator(object):
