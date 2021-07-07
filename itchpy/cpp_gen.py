@@ -92,8 +92,8 @@ class CPPGenerator(object):
 
 if __name__ == "__main__":
 
-    from lexer import ITCHLexer
-    from parser import ITCHParser
+    from .lexer import ITCHLexer
+    from .parser import ITCHParser
 
     data = """
     struct AddOrder {

@@ -1,7 +1,7 @@
 from sly import Parser
 
-from itchpy.lexer import ITCHLexer
-from itchpy import itch_ast as i_ast
+from .lexer import ITCHLexer
+from . import itch_ast as i_ast
 
 # adapted from pycparser
 

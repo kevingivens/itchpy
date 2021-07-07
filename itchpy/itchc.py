@@ -1,7 +1,7 @@
-from itchpy.cpp_gen import CPPGenerator
-from itchpy.parser import ITCHParser
-from itchpy.lexer import ITCHLexer
-from itchpy.itch_ast import Enum, Struct
+from .cpp_gen import CPPGenerator
+from .parser import ITCHParser
+from .lexer import ITCHLexer
+from .itch_ast import Enum, Struct
 
 
 class ItchCompiler(object):
@@ -13,46 +13,22 @@ class ItchCompiler(object):
 
     def compile(self, data):
         self.ast = self.parser.parse(self.lexer.tokenize(data))
-        self._gen_cpp()
+        enums_str = self._gen_enums()
+        struct_str = self._gen_structs()
+        return enums_str, struct_str
 
     @property
     def enums(self):
-        return [d for d in self.ast.DeclList if isinstance(d, Enum)]
+        return [d for d in self.ast.decls if isinstance(d, Enum)]
 
     @property
     def structs(self):
-        return [d for d in self.ast.DeclList if isinstance(d, Struct)]
-    
-    def _gen_cpp(self):
-        self._gen_enums()
-        self._gen_structs()
+        return [d for d in self.ast.decls if isinstance(d, Struct)]
 
     def _gen_enums(self):
         return "/n".join(self.gen.visit_Enum(e) for e in self.enums)
 
     def _gen_structs(self):
         struct_str = "/n ".join(self.gen.visit_Struct(e) for e in self.structs)
-        return "pragma push(1):\n" + struct_str + "\npop(1)"
+        return "#pragma pack(1):\n" + struct_str + "\npop()"
 
-if __name__ == "__main__":
-    data = """
-    struct AddOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    struct LimitOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    enum Ticket: char {
-        Stop, 
-        Speed
-    }
-    """
-   
-    comp = ItchCompiler()
-    print(comp.compile(data))
