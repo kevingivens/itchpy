@@ -1,0 +1,17 @@
+enum EventCode: char {
+    O, 
+    S,
+    Q,
+    M,
+    E,
+    C
+}
+
+struct SystemEventMessage {
+    message_type:char;
+    stock_locate:short;
+    tracking_number:short;
+    timestamp:time;
+    event_code:EventCode;
+}
+
