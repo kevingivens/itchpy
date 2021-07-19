@@ -12,6 +12,5 @@ struct SystemEventMessage {
     stock_locate:short;
     tracking_number:short;
     timestamp:time;
-    event_code:EventCode;
 }
 

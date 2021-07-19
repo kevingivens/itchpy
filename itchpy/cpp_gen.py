@@ -88,38 +88,3 @@ class CPPGenerator(object):
         if add_indent:
             self.indent_level -= 2
         return indent + self.visit(n) + ";\n"
-
-
-if __name__ == "__main__":
-
-    from .lexer import ITCHLexer
-    from .parser import ITCHParser
-
-    data = """
-    struct AddOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    struct LimitOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    enum Ticket: char {
-        Stop, 
-        Speed
-    }
-    """
-
-    lexer = ITCHLexer()
-
-    parser = ITCHParser()
-
-    ast = parser.parse(lexer.tokenize(data))
-
-    generator = CPPGenerator()
-
-    print(generator.visit(ast))

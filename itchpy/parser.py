@@ -1,10 +1,9 @@
 from sly import Parser
 
-from .lexer import ITCHLexer
-from . import itch_ast as i_ast
+from lexer import ITCHLexer
+import itch_ast as i_ast
 
 # adapted from pycparser
-
 
 class ITCHParser(Parser):
     # builds an AST
@@ -89,31 +88,3 @@ class ITCHParser(Parser):
 
     def error(self, tok):
         self.errors.append(tok)
-
-
-if __name__ == "__main__":
-    data = """
-    struct AddOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    struct LimitOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    enum Ticket: char {
-        Stop, 
-        Speed
-    }
-    """
-
-    lexer = ITCHLexer()
-
-    parser = ITCHParser()
-
-    result = parser.parse(lexer.tokenize(data))
-    print(result)
