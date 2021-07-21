@@ -1,4 +1,5 @@
 import sys
+import textwrap
 
 import click
 
@@ -11,6 +12,7 @@ from itch_ast import Enum, Struct
 class ItchCompiler(object):
     namespace = "\nnamespace itchpy {\n"
     footer = "\n}\n"
+    tab = '    '
     def __init__(self):
         self.gen = CPPGenerator()
         self.lexer = ITCHLexer()
@@ -68,7 +70,7 @@ class ItchCompiler(object):
         network_to_host(msg);
         handler(msg);
         return ParseStatus::OK;
-    }
+    };
 """
         body = """
     template<typename Handler>
@@ -79,13 +81,12 @@ class ItchCompiler(object):
         switch (MessageType(msg[0])) {
 """
         for s in self.structs:
-            body += f"\ncase MessageType::{s.name}:\n"
-            body += f"return parseAs<{s.name}>(msg, len, std::forward<Handler>(handler));\n"
-        body += """ default:
+            body += textwrap.indent(f"case MessageType::{s.name}:\n", 2*self.tab)
+            body += textwrap.indent(f"return parseAs<{s.name}>(msg, len, std::forward<Handler>(handler));\n", 3*self.tab)
+        body += """        default:
             return ParseStatus::UnknownMessageType;
         }
-    }
-"""
+    }"""
         return header + body + self.footer
 
 
