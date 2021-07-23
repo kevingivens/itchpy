@@ -47,7 +47,7 @@ class ItchCompiler(object):
     
     def _gen_parser(self, enums_fp, structs_fp):
         """ generate file (str) of parser """
-        header = f'#pragma once\n#include "byteswap.h"\n#include "{enums_fp.name}"\n#include "{structs_fp.name}"\n\n {self.namespace}'
+        header = f'#pragma once\n#include "base.h"\n#include "{enums_fp.name}"\n#include "{structs_fp.name}"\n\n {self.namespace}'
         header += """    enum class ParseStatus
     {
         // Message was parsed successfully and handler was invoked.
@@ -67,7 +67,7 @@ class ItchCompiler(object):
         if (len < sizeof(MsgType))
             return ParseStatus::Truncated;
         MsgType msg{*reinterpret_cast<const MsgType*>(buf)};
-        network_to_host(msg);
+        EndianSwap(msg);
         handler(msg);
         return ParseStatus::OK;
     };
