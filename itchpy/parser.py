@@ -3,8 +3,6 @@ from sly import Parser
 from lexer import ITCHLexer
 import itch_ast as i_ast
 
-# adapted from pycparser
-
 class ITCHParser(Parser):
     # builds an AST
 

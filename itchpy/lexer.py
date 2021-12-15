@@ -76,29 +76,3 @@ class ITCHLexer(Lexer):
     def __init__(self):
         self.errors = []
 
-
-if __name__ == "__main__":
-    data = """
-    # add order example
-    add ** ;
-    enum Color: char {
-        Red, 
-        Blue
-    }
-    
-    enum Ticket: char {
-        Stop, 
-        Speed
-    }
-
-    struct AddOrder {
-        message_type:char;
-        stock_locate:short;
-        tracking_number:short;
-        timestamp:time;
-    }
-    """
-    lexer = ITCHLexer()
-
-    for tok in lexer.tokenize(data):
-        print(tok)
